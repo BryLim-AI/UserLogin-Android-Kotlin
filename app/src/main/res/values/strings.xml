@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">LoginApp</string>
+    <string name="submit">Submit</string>
+    <string name="password_hint">Your Password</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="un_hint">Email Address</string>
+    <!-- %s placeholder -->
+    <string name="welcome_message">"Hi!, %s! Welcome to Android Kotlin.</string>
+</resources>
