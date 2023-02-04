@@ -25,33 +25,79 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun ValidateUser(it: View) {
-        val username = binding.editUN.text
-        val password = binding.editPass.text
+        val usernameInput = binding.editUN.text.toString()
+        val passwordInput = binding.editPass.text.toString()
 
-        //convert editable object first to string.
-        if (username.toString()
-                .equals("bryanqlim@gmail.com", ignoreCase = true) &&
-            password.toString().equals("bryan123")) {
-            // Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
-            val message = getString(R.string.welcome_message,username)
-            Snackbar.make(
-                it,
-                // to replace the hard coded message.
-                //"Welcome $username, This is Android Programming ",
-                message,
-                Snackbar.LENGTH_SHORT
-            )
-            //to create a button inside a snackbar.
-                .setAction("Show Details...", { displayToast() })
-                .show()
-        } else {
-            Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+
+        // store username and password using array.
+        var usersArr = arrayListOf<Pair<String,String>>()
+        usersArr.add(Pair("bryanlim","bry123"))
+        usersArr.add(Pair("mobdev","mobdev123"))
+        usersArr.add(Pair("coders","coders123"))
+        usersArr.add(Pair("admin","admin123"))
+
+        // if the user attempts to login with an invalid credentials then,
+        // it will automatically shuts the program and show a toast that the user.
+        // reaches the limit of attempts.
+
+        var attempts = 0
+        while (attempts < 3) { // if the attempts is less than 3.
+            var isValidLogin = false
+            for ((username, password) in usersArr) {
+                if (username == usernameInput && password == passwordInput) {
+                    isValidLogin = true
+                    val message = getString(R.string.welcome_message, username)
+                    Snackbar.make(
+                        it,
+                        // to replace the hard coded message.
+                        //"Welcome $username, This is Android Programming ",
+                        message,
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .setAction("Show Details...", { displayToast() })
+                        .show()
+                    break
+                } //if clause
+            }//for clause
+            if (!isValidLogin) {
+                attempts++
+                Toast.makeText(this, "Invalid Login. Attempts left: ${3 - attempts}", Toast.LENGTH_SHORT).show()
+            } else {
+                break
+            }
+        }//while
+        if (attempts == 3) {
+            Toast.makeText(this, "You have exceeded the maximum login attempts. Exiting program.", Toast.LENGTH_SHORT).show()
+            finish() //exits program.
         }
-    }
+
+
+//        //convert editable object first to string.
+//        if (username.toString()
+//                .equals("bryanqlim@gmail.com", ignoreCase = true) &&
+//            password.toString().equals("bryan123")) {
+//            // Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
+//            val message = getString(R.string.welcome_message,username)
+//            Snackbar.make(
+//                it,
+//                // to replace the hard coded message.
+//                //"Welcome $username, This is Android Programming ",
+//                message,
+//                Snackbar.LENGTH_SHORT
+//            )
+//            //to create a button inside a snackbar.
+//                .setAction("Show Details...", { displayToast() })
+//                .show()
+//        } else {
+//            Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
+//        } //else statement
+
+
+
+    }// end of validate user func.
 
     private fun displayToast() {
         Toast.makeText(this,"Login Successful ${Calendar.getInstance().time}",
         Toast.LENGTH_SHORT).show()
-
     }
 }
