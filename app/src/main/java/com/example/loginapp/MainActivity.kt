@@ -3,10 +3,13 @@ package com.example.loginapp
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import com.example.loginapp.databinding.ActivityMainBinding
 import com.google.android.material.snackbar.Snackbar
-import java.util.Calendar
+import java.text.SimpleDateFormat
+import java.util.*
 
 // Challenge:
     // create 2 users using array.
@@ -14,6 +17,8 @@ import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    var attempts = 0
+    var isValidLogin = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -28,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         val usernameInput = binding.editUN.text.toString()
         val passwordInput = binding.editPass.text.toString()
 
-
         // store username and password using array.
         var usersArr = arrayListOf<Pair<String,String>>()
         usersArr.add(Pair("bryanlim","bry123"))
@@ -40,12 +44,10 @@ class MainActivity : AppCompatActivity() {
         // it will automatically shuts the program and show a toast that the user.
         // reaches the limit of attempts.
 
-        var attempts = 0
-        while (attempts < 3) { // if the attempts is less than 3.
-            var isValidLogin = false
+            // if the attempts is less than 3.
             for ((username, password) in usersArr) {
                 if (username == usernameInput && password == passwordInput) {
-                    isValidLogin = true
+
                     val message = getString(R.string.welcome_message, username)
                     Snackbar.make(
                         it,
@@ -56,24 +58,35 @@ class MainActivity : AppCompatActivity() {
                     )
                         .setAction("Show Details...", { displayToast() })
                         .show()
+                    isValidLogin = true
                     break
                 } //if clause
+                else{
+                    isValidLogin = false
+                }
             }//for clause
-            if (!isValidLogin) {
-                attempts++
-                Toast.makeText(this, "Invalid Login. Attempts left: ${3 - attempts}", Toast.LENGTH_SHORT).show()
-            } else {
-                break
-            }
-        }//while
-        if (attempts == 3) {
-            Toast.makeText(this, "You have exceeded the maximum login attempts. Exiting program.", Toast.LENGTH_SHORT).show()
-            finish() //exits program.
-        }
 
+        if(isValidLogin == false){
+            val timeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+            val invalidAttempt = TextView(this)
+
+            var counter = 1
+            invalidAttempt.text = "Invalid attempt number ${++attempts} at $timeStamp"
+            findViewById<LinearLayout>(R.id.layout).addView(invalidAttempt)
+        }
+        if (attempts == 3) {
+            Toast.makeText(this, "You have reached a maximum of three (3) invalid login attempts", Toast.LENGTH_SHORT).show()
+            finish()
+        }
 
 //        //convert editable object first to string.
 //        if (username.toString()
+
+    //        val timeStamp = SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Date())
+//            val invalidAttempt = TextView(this)
+//            invalidAttempt.text = "Invalid attempt number ${attempts++} at $timeStamp"
+//            findViewById<LinearLayout>(R.id.layout).addView(invalidAttempt)
+
 //                .equals("bryanqlim@gmail.com", ignoreCase = true) &&
 //            password.toString().equals("bryan123")) {
 //            // Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show()
@@ -92,12 +105,29 @@ class MainActivity : AppCompatActivity() {
 //            Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_SHORT).show()
 //        } //else statement
 
-
-
     }// end of validate user func.
 
     private fun displayToast() {
         Toast.makeText(this,"Login Successful ${Calendar.getInstance().time}",
         Toast.LENGTH_SHORT).show()
+    }
+
+    fun handleInvalidLogin() {
+        attempts++
+        val errorText = TextView(this)
+        errorText.text = "Invalid attempt number $attempts at ${System.currentTimeMillis()}"
+
+        if (attempts >= 3) {
+            Toast.makeText(this, "You have reached a maximum of three (3) invalid login attempts", Toast.LENGTH_LONG).show()
+            finish()
+        }
+    }
+
+    private fun addTextView(text:String){
+        val txtView1 = TextView(this)
+        txtView1.text = text
+        txtView1.textSize = 16f
+        txtView1.textAlignment = View.TEXT_ALIGNMENT_CENTER
+        binding.layout.addView(txtView1)
     }
 }
